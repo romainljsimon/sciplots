@@ -9,7 +9,7 @@ description = "A plot utility package"
 authors = [
     {name = "Romain Simon", email = "romainljsimon@gmail.com"}
 ]
-license = {text = "MIT"}
+license = {text = "GPLv3"}
 dependencies = [
     "matplotlib"
 ]
