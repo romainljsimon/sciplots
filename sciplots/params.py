@@ -1,4 +1,7 @@
 import matplotlib.pyplot as plt
+import numpy as np
+import matplotlib.colors as mc
+import colorsys
 
 
 def update_params(fig_width_pt=400, golden_mean=0.5):
@@ -19,3 +22,11 @@ def update_params(fig_width_pt=400, golden_mean=0.5):
             'figure.figsize': fig_size}
 
     plt.rcParams.update(params)
+
+def adjust_lightness(color, amount=0.5):
+    try:
+        c = mc.cnames[color]
+    except:
+        c = color
+    c = colorsys.rgb_to_hls(*mc.to_rgb(c))
+    return colorsys.hls_to_rgb(c[0], np.max([0, np.min([1, amount * c[1]])]), c[2])
