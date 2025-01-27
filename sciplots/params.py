@@ -31,9 +31,9 @@ def adjust_lightness(color, amount=0.5):
     c = colorsys.rgb_to_hls(*mc.to_rgb(c))
     return colorsys.hls_to_rgb(c[0], np.max([0, np.min([1, amount * c[1]])]), c[2])
 
-def get_rb(data):
+def get_divergent_cmap(data, col1='b', col2='r'):
     # Make a user-defined colormap.
-    cm1 = mcol.LinearSegmentedColormap.from_list("MyCmapName",["b","r"])
+    cm1 = mcol.LinearSegmentedColormap.from_list(f"{col1}_to_{col2}",[col1, col2])
     cnorm = mcol.Normalize(vmin=min(data),vmax=max(data))
     cpick = cm.ScalarMappable(norm=cnorm,cmap=cm1)
     cpick.set_array([])
