@@ -11,7 +11,8 @@ authors = [
 ]
 license = {text = "GPLv3"}
 dependencies = [
-    "matplotlib"
+    "matplotlib",
+    "numpy"
 ]
 
 readme = "README.md"
