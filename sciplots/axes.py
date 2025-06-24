@@ -2,34 +2,34 @@ import matplotlib.pyplot as plt
 
 class Axes:
     """
-    A helper class to configure the properties of matplotlib axes, including limits, ticks,
+    Helper class to configure matplotlib axes properties, including limits, ticks,
     labels, and scales for both primary and twin axes.
-
-    Attributes:
-        xlim (tuple, optional): Limits for the x-axis (min, max). Default is None.
-        ylim (tuple, optional): Limits for the y-axis (min, max). Default is None.
-        xticks (list, optional): Tick positions on the x-axis. Default is None.
-        yticks (list, optional): Tick positions on the y-axis. Default is None.
-        xtickslabel (list, optional): Labels for x-axis ticks. Default is inferred from `xticks`.
-        ytickslabel (list, optional): Labels for y-axis ticks. Default is inferred from `yticks`.
-        xscale (str, optional): Scale type for the x-axis (e.g., 'linear', 'log'). Default is None.
-        yscale (str, optional): Scale type for the y-axis (e.g., 'linear', 'log'). Default is None.
     """
     def __init__(self, ax, xlim=None, ylim=None, xticks=None, yticks=None, 
                  xtickslabel=None, ytickslabel=None, xscale=None, yscale=None):
         """
         Initialize the Axes object and configure the main and twin axes.
 
-        Args:
-            ax (matplotlib.axes.Axes): The main Axes object to configure.
-            xlim (tuple, optional): Limits for the x-axis (min, max). Default is None.
-            ylim (tuple, optional): Limits for the y-axis (min, max). Default is None.
-            xticks (list, optional): Tick positions on the x-axis. Default is None.
-            yticks (list, optional): Tick positions on the y-axis. Default is None.
-            xtickslabel (list, optional): Labels for x-axis ticks. Default is inferred from `xticks`.
-            ytickslabel (list, optional): Labels for y-axis ticks. Default is inferred from `yticks`.
-            xscale (str, optional): Scale type for the x-axis (e.g., 'linear', 'log'). Default is None.
-            yscale (str, optional): Scale type for the y-axis (e.g., 'linear', 'log'). Default is None.
+        Parameters
+        ----------
+        ax : matplotlib.axes.Axes
+            The main Axes object to configure.
+        xlim : tuple, optional
+            Limits for the x-axis (min, max). Default is None.
+        ylim : tuple, optional
+            Limits for the y-axis (min, max). Default is None.
+        xticks : list, optional
+            Tick positions on the x-axis. Default is None.
+        yticks : list, optional
+            Tick positions on the y-axis. Default is None.
+        xtickslabel : list, optional
+            Labels for x-axis ticks. Default is inferred from `xticks`.
+        ytickslabel : list, optional
+            Labels for y-axis ticks. Default is inferred from `yticks`.
+        xscale : str, optional
+            Scale type for the x-axis (e.g., 'linear', 'log'). Default is None.
+        yscale : str, optional
+            Scale type for the y-axis (e.g., 'linear', 'log'). Default is None.
         """
         self.xlim, self.ylim = xlim, ylim
         self.xticks, self.yticks = xticks, yticks
@@ -46,10 +46,14 @@ class Axes:
         """
         Configure the properties of a single axis (x or y).
 
-        Args:
-            ax (matplotlib.axes.Axes): The Axes object to configure.
-            axis (str): The axis to configure ('x' or 'y').
-            twin (bool): Whether the axis is a twin axis. Default is False.
+        Parameters
+        ----------
+        ax : matplotlib.axes.Axes
+            The Axes object to configure.
+        axis : str
+            The axis to configure ('x' or 'y').
+        twin : bool
+            Whether the axis is a twin axis.
         """
         if axis == "x":
             self._set_limits_and_ticks(ax, self.xlim, self.xticks, self.xtickslabel, self.xscale, twin, "x")
@@ -61,14 +65,22 @@ class Axes:
         """
         Set limits, ticks, labels, and scale for a specific axis.
 
-        Args:
-            ax (matplotlib.axes.Axes): The Axes object to configure.
-            lim (tuple, optional): Axis limits (min, max). Default is None.
-            ticks (list, optional): Tick positions. Default is None.
-            labels (list, optional): Tick labels. Default is inferred from `ticks`.
-            scale (str, optional): Scale type (e.g., 'linear', 'log'). Default is None.
-            twin (bool): Whether the axis is a twin axis. Default is False.
-            axis (str): The axis to configure ('x' or 'y').
+        Parameters
+        ----------
+        ax : matplotlib.axes.Axes
+            The Axes object to configure.
+        lim : tuple, optional
+            Axis limits (min, max). Default is None.
+        ticks : list, optional
+            Tick positions. Default is None.
+        labels : list, optional
+            Tick labels. Default is inferred from `ticks`.
+        scale : str, optional
+            Scale type (e.g., 'linear', 'log'). Default is None.
+        twin : bool
+            Whether the axis is a twin axis.
+        axis : str
+            The axis to configure ('x' or 'y').
         """
         # Set scale, limits, and ticks
         getattr(ax, f"set_{axis}scale")(scale) if scale else None
