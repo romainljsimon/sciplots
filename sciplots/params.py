@@ -13,10 +13,10 @@ def update_params(fig_width_pt=400, golden_mean=0.5):
     fig_size =  [fig_width, fig_height]
 
     params = {'backend': 'pdf',
-            'axes.labelsize': 12,  
-            'legend.fontsize': 7,
-            'xtick.labelsize': 8,
-            'ytick.labelsize': 8,
+            'axes.labelsize': labelsize,  
+            'legend.fontsize': legend_fontsize,
+            'xtick.labelsize': xtick_labesize,
+            'ytick.labelsize': ytick_labelsize,
             'text.usetex': False,
             'font.family': 'serif',
             'figure.figsize': fig_size}
