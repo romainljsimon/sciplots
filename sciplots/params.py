@@ -1,12 +1,12 @@
-import matplotlib.pyplot as plt
 import numpy as np
-import matplotlib.colors as mc
 import colorsys
+import matplotlib.pyplot as plt
+import matplotlib.colors as mc
 import matplotlib.colors as mcol
 import matplotlib.cm as cm
+from matplotlib import use
 
-
-def update_params(fig_width_pt=400, golden_mean=0.5, labelsize=12, legend_fontsize=7, xtick_labesize=8, ytick_labelsize=8):
+def update_params(fig_width_pt=400, golden_mean=0.5, labelsize=12, legend_fontsize=7, xtick_labesize=8, ytick_labelsize=8, backend=None):
     """
     Update matplotlib's rcParams for consistent figure formatting.
 
@@ -24,21 +24,24 @@ def update_params(fig_width_pt=400, golden_mean=0.5, labelsize=12, legend_fontsi
         Font size for x-axis tick labels (default is 8).
     ytick_labelsize : int, optional
         Font size for y-axis tick labels (default is 8).
+    backend: str, optional
+        Matplotlib backend to use (default is None, which uses the current backend).
     """
     inches_per_pt = 1.0/72.27               # Convert pt to inch
     fig_width = fig_width_pt*inches_per_pt  # width in inches
     fig_height = fig_width*golden_mean      # height in inches
     fig_size =  [fig_width, fig_height]
-
-    params = {'backend': 'pdf',
+    params = {
             'axes.labelsize': labelsize,  
             'legend.fontsize': legend_fontsize,
             'xtick.labelsize': xtick_labesize,
             'ytick.labelsize': ytick_labelsize,
             'text.usetex': False,
             'font.family': 'serif',
-            'figure.figsize': fig_size}
-
+            'figure.figsize': fig_size
+            }
+    if backend is not None:
+        use(backend)
     plt.rcParams.update(params)
 
 def adjust_lightness(color, amount=0.5):
