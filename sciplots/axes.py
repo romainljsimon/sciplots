@@ -6,7 +6,7 @@ class Axes:
     labels, and scales for both primary and twin axes.
     """
     def __init__(self, ax, xlim=None, ylim=None, xticks=None, yticks=None, 
-                 xtickslabel=None, ytickslabel=None, xscale=None, yscale=None):
+                 xtickslabel=None, ytickslabel=None, xlabel=None, ylabel=None, xscale=None, yscale=None):
         """
         Initialize the Axes object and configure the main and twin axes.
 
@@ -41,6 +41,10 @@ class Axes:
         self._configure_axes(ax.twiny(), "x", twin=True)
         self._configure_axes(ax, "y", twin=False)
         self._configure_axes(ax.twinx(), "y", twin=True)
+        if xlabel:
+            ax.set_xlabel(xlabel)
+        if ylabel:
+            ax.set_ylabel(ylabel)
 
     def _configure_axes(self, ax, axis, twin):
         """
