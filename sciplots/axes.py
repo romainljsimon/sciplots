@@ -6,7 +6,8 @@ class Axes:
     labels, and scales for both primary and twin axes.
     """
     def __init__(self, ax, xlim=None, ylim=None, xticks=None, yticks=None, 
-                 xtickslabel=None, ytickslabel=None, xlabel=None, ylabel=None, xscale=None, yscale=None):
+                 xtickslabel=None, ytickslabel=None, xlabel=None, ylabel=None, 
+                 xscale="linear", yscale="linear"):
         """
         Initialize the Axes object and configure the main and twin axes.
 
@@ -26,10 +27,14 @@ class Axes:
             Labels for x-axis ticks. Default is inferred from `xticks`.
         ytickslabel : list, optional
             Labels for y-axis ticks. Default is inferred from `yticks`.
+        xlabel : str, optional
+            Label for x-axis. Default is None.
+        ylabel : str, optional
+            Label for y-axis. Default is None.
         xscale : str, optional
-            Scale type for the x-axis (e.g., 'linear', 'log'). Default is None.
+            Scale type for the x-axis (e.g., 'linear', 'log'). Default is linear.
         yscale : str, optional
-            Scale type for the y-axis (e.g., 'linear', 'log'). Default is None.
+            Scale type for the y-axis (e.g., 'linear', 'log'). Default is linear.
         """
         self.xlim, self.ylim = xlim, ylim
         self.xticks, self.yticks = xticks, yticks
