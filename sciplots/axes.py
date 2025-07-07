@@ -7,7 +7,8 @@ class Axes:
     """
     def __init__(self, ax, xlim=None, ylim=None, xticks=None, yticks=None, 
                  xtickslabel=None, ytickslabel=None, xlabel=None, ylabel=None, 
-                 xscale="linear", yscale="linear"):
+                 xscale="linear", yscale="linear", xtwin=True, ytwin=True,
+                 xtwinlabel=False, ytwinlabel=False):
         """
         Initialize the Axes object and configure the main and twin axes.
 
@@ -36,22 +37,26 @@ class Axes:
         yscale : str, optional
             Scale type for the y-axis (e.g., 'linear', 'log'). Default is linear.
         """
+        self.ax = ax
         self.xlim, self.ylim = xlim, ylim
         self.xticks, self.yticks = xticks, yticks
         self.xtickslabel = xtickslabel or (list(map(str, xticks)) if xticks else None)
         self.ytickslabel = ytickslabel or (list(map(str, yticks)) if yticks else None)
         self.xscale, self.yscale = xscale, yscale
+        self.xtwinlabel, self.ytwinlabel = xtwinlabel, ytwinlabel
 
-        self._configure_axes(ax, "x", twin=False)
-        self._configure_axes(ax.twiny(), "x", twin=True)
-        self._configure_axes(ax, "y", twin=False)
-        self._configure_axes(ax.twinx(), "y", twin=True)
+        self._configure_axes(ax, "x")
+        self._configure_axes(ax, "y")
+        if xtwin:    
+            self._configure_axes(ax.twiny(), "x", twin=True)
+        if ytwin:
+            self._configure_axes(ax.twinx(), "y", twin=True)
         if xlabel:
             ax.set_xlabel(xlabel)
         if ylabel:
             ax.set_ylabel(ylabel)
 
-    def _configure_axes(self, ax, axis, twin):
+    def _configure_axes(self, ax, axis, twin=False):
         """
         Configure the properties of a single axis (x or y).
 
@@ -65,12 +70,12 @@ class Axes:
             Whether the axis is a twin axis.
         """
         if axis == "x":
-            self._set_limits_and_ticks(ax, self.xlim, self.xticks, self.xtickslabel, self.xscale, twin, "x")
+            self._set_limits_and_ticks(ax, self.xlim, self.xticks, self.xtickslabel, self.xscale, "x", twin)
         elif axis == "y":
-            self._set_limits_and_ticks(ax, self.ylim, self.yticks, self.ytickslabel, self.yscale, twin, "y")
+            self._set_limits_and_ticks(ax, self.ylim, self.yticks, self.ytickslabel, self.yscale, "y", twin)
         ax.tick_params(direction='in')
 
-    def _set_limits_and_ticks(self, ax, lim, ticks, labels, scale, twin, axis):
+    def _set_limits_and_ticks(self, ax, lim, ticks, labels, scale, axis, twin):
         """
         Set limits, ticks, labels, and scale for a specific axis.
 
@@ -99,5 +104,6 @@ class Axes:
             getattr(ax, f"set_{axis}ticks")(ticks, labels=tick_labels)
         elif twin:
             pos = "right" if axis == 'y' else 'top'
-            ax.tick_params(**{f"label{pos}": False})
+            twinlabel = self.xtwinlabel if axis == 'x' else self.ytwinlabel
+            ax.tick_params(**{f"label{pos}": twinlabel})
         getattr(ax, f"set_{axis}ticks")([], minor=True)
