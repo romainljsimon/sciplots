@@ -6,6 +6,7 @@ authors = [
     {name = "Romain Simon", email = "romainljsimon@gmail.com"}
 ]
 license = {text = "GPLv3"}
+keywords = ["plotting", "matplotlib", "visualization", "utilities"]
 dependencies = [
     "matplotlib",
     "numpy"
