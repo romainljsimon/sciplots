@@ -1,7 +1,7 @@
 [project]
 name = "sciplots"
 version = "0.1.0"
-description = "A plot utility package"
+description = "Simple matplotlib plotting utilities with automatic twin axis and clean styling"
 authors = [
     {name = "Romain Simon", email = "romainljsimon@gmail.com"}
 ]
