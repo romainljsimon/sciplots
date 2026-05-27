@@ -1,14 +1,31 @@
+from typing import Optional, List, Tuple, Union
 import matplotlib.pyplot as plt
+import matplotlib.axes
 
 class Axes:
     """
     Helper class to configure matplotlib axes properties, including limits, ticks,
     labels, and scales for both primary and twin axes.
     """
-    def __init__(self, ax, xlim=None, ylim=None, xticks=None, yticks=None, 
-                 xtickslabel=None, ytickslabel=None, xlabel=None, ylabel=None, 
-                 xscale="linear", yscale="linear", xtwin=True, ytwin=True,
-                 xtwinlabel=False, ytwinlabel=False):
+    def __init__(
+        self, 
+        ax: matplotlib.axes.Axes, 
+        xlim: Optional[Tuple[float, float]] = None, 
+        ylim: Optional[Tuple[float, float]] = None, 
+        xticks: Optional[List[float]] = None, 
+        yticks: Optional[List[float]] = None,
+        xtickslabel: Optional[List[str]] = None, 
+        ytickslabel: Optional[List[str]] = None, 
+        xlabel: Optional[str] = None, 
+        ylabel: Optional[str] = None,
+        xscale: str = "linear", 
+        yscale: str = "linear", 
+        xtwin: bool = True, 
+        ytwin: bool = True,
+        xtwinlabel: bool = False, 
+        ytwinlabel: bool = False, 
+        direction: str = 'in'
+    ) -> None:
         """
         Initialize the Axes object and configure the main and twin axes.
 
@@ -37,14 +54,14 @@ class Axes:
         yscale : str, optional
             Scale type for the y-axis (e.g., 'linear', 'log'). Default is linear.
         """
-        self.ax = ax
+
         self.xlim, self.ylim = xlim, ylim
         self.xticks, self.yticks = xticks, yticks
         self.xtickslabel = xtickslabel or (list(map(str, xticks)) if xticks else None)
         self.ytickslabel = ytickslabel or (list(map(str, yticks)) if yticks else None)
         self.xscale, self.yscale = xscale, yscale
         self.xtwinlabel, self.ytwinlabel = xtwinlabel, ytwinlabel
-
+        self.direction = direction
         self._configure_axes(ax, "x")
         self._configure_axes(ax, "y")
         if xtwin:    
@@ -55,8 +72,9 @@ class Axes:
             ax.set_xlabel(xlabel)
         if ylabel:
             ax.set_ylabel(ylabel)
-
-    def _configure_axes(self, ax, axis, twin=False):
+        
+    
+    def _configure_axes(self, ax: matplotlib.axes.Axes, axis: str, twin: bool = False) -> None:
         """
         Configure the properties of a single axis (x or y).
 
@@ -73,9 +91,18 @@ class Axes:
             self._set_limits_and_ticks(ax, self.xlim, self.xticks, self.xtickslabel, self.xscale, "x", twin)
         elif axis == "y":
             self._set_limits_and_ticks(ax, self.ylim, self.yticks, self.ytickslabel, self.yscale, "y", twin)
-        ax.tick_params(direction='in')
+        ax.tick_params(direction=self.direction)
 
-    def _set_limits_and_ticks(self, ax, lim, ticks, labels, scale, axis, twin):
+    def _set_limits_and_ticks(
+        self, 
+        ax: matplotlib.axes.Axes, 
+        lim: Optional[Tuple[float, float]], 
+        ticks: Optional[List[float]], 
+        labels: Optional[List[str]], 
+        scale: str, 
+        axis: str, 
+        twin: bool
+    ) -> None:
         """
         Set limits, ticks, labels, and scale for a specific axis.
 
