@@ -20,7 +20,7 @@ def update_params(fig_width_pt=400, aspect_ratio=0.5, labelsize=12, legend_fonts
         Font size for axis labels (default is 12).
     legend_fontsize : int, optional
         Font size for legend text (default is 7).
-    xtick_labesize : int, optional
+    xtick_labelsize : int, optional
         Font size for x-axis tick labels (default is 8).
     ytick_labelsize : int, optional
         Font size for y-axis tick labels (default is 8).
