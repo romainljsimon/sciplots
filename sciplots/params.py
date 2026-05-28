@@ -1,12 +1,92 @@
 import numpy as np
 import colorsys
+from contextlib import contextmanager
 import matplotlib.pyplot as plt
 import matplotlib.colors as mc
 import matplotlib.colors as mcol
 import matplotlib.cm as cm
 from matplotlib import use
 
-def update_params(fig_width_pt=400, aspect_ratio=0.5, labelsize=12, legend_fontsize=7, xtick_labelsize=8, ytick_labelsize=8, backend=None):
+def figure_size(width=400, aspect_ratio=0.5, unit="pt"):
+    """
+    Convert a figure width and aspect ratio to Matplotlib's inch-based size.
+
+    Parameters
+    ----------
+    width : float, optional
+        Figure width. Interpreted as points by default.
+    aspect_ratio : float, optional
+        Figure height divided by figure width.
+    unit : {"pt", "in", "cm"}, optional
+        Unit used for ``width``.
+
+    Returns
+    -------
+    list
+        ``[width, height]`` in inches, suitable for ``figure.figsize``.
+    """
+    if width <= 0:
+        raise ValueError("width must be positive")
+    if aspect_ratio <= 0:
+        raise ValueError("aspect_ratio must be positive")
+
+    unit = unit.lower()
+    if unit in {"pt", "point", "points"}:
+        fig_width = width / 72.27
+    elif unit in {"in", "inch", "inches"}:
+        fig_width = width
+    elif unit in {"cm", "centimeter", "centimeters"}:
+        fig_width = width / 2.54
+    else:
+        raise ValueError("unit must be one of 'pt', 'in', or 'cm'")
+
+    return [fig_width, fig_width * aspect_ratio]
+
+
+def get_params(
+    fig_width_pt=400,
+    aspect_ratio=0.5,
+    labelsize=12,
+    legend_fontsize=7,
+    xtick_labelsize=8,
+    ytick_labelsize=8,
+    font_family="serif",
+    usetex=False,
+    dpi=None,
+):
+    """
+    Build the rcParams dictionary used by :func:`update_params`.
+
+    This is useful when you want to inspect, merge, or pass the parameters to
+    ``plt.rc_context`` yourself.
+    """
+    params = {
+        "axes.labelsize": labelsize,
+        "legend.fontsize": legend_fontsize,
+        "xtick.labelsize": xtick_labelsize,
+        "ytick.labelsize": ytick_labelsize,
+        "text.usetex": usetex,
+        "font.family": font_family,
+        "figure.figsize": figure_size(fig_width_pt, aspect_ratio, unit="pt"),
+    }
+    if dpi is not None:
+        params["figure.dpi"] = dpi
+        params["savefig.dpi"] = dpi
+    return params
+
+
+def update_params(
+    fig_width_pt=400,
+    aspect_ratio=0.5,
+    labelsize=12,
+    legend_fontsize=7,
+    xtick_labelsize=8,
+    ytick_labelsize=8,
+    backend=None,
+    font_family="serif",
+    usetex=False,
+    dpi=None,
+):
     """
     Update matplotlib's rcParams for consistent figure formatting.
 
@@ -26,23 +106,46 @@ def update_params(fig_width_pt=400, aspect_ratio=0.5, labelsize=12, legend_fonts
         Font size for y-axis tick labels (default is 8).
     backend: str, optional
         Matplotlib backend to use (default is None, which uses the current backend).
+
+    Returns
+    -------
+    dict
+        The rcParams values that were applied.
     """
-    inches_per_pt = 1.0/72.27               # Convert pt to inch
-    fig_width = fig_width_pt*inches_per_pt  # width in inches
-    fig_height = fig_width*aspect_ratio      # height in inches
-    fig_size =  [fig_width, fig_height]
-    params = {
-            'axes.labelsize': labelsize,  
-            'legend.fontsize': legend_fontsize,
-            'xtick.labelsize': xtick_labelsize,
-            'ytick.labelsize': ytick_labelsize,
-            'text.usetex': False,
-            'font.family': 'serif',
-            'figure.figsize': fig_size
-            }
     if backend is not None:
         use(backend)
+    params = get_params(
+        fig_width_pt=fig_width_pt,
+        aspect_ratio=aspect_ratio,
+        labelsize=labelsize,
+        legend_fontsize=legend_fontsize,
+        xtick_labelsize=xtick_labelsize,
+        ytick_labelsize=ytick_labelsize,
+        font_family=font_family,
+        usetex=usetex,
+        dpi=dpi,
+    )
     plt.rcParams.update(params)
+    return params
+
+
+set_style = update_params
+
+
+@contextmanager
+def style_context(*args, backend=None, **kwargs):
+    """
+    Temporarily apply sciplots style settings inside a ``with`` block.
+
+    Examples
+    --------
+    >>> with style_context(fig_width_pt=300, aspect_ratio=1):
+    ...     fig, ax = plt.subplots()
+    """
+    if backend is not None:
+        use(backend)
+    with plt.rc_context(get_params(*args, **kwargs)):
+        yield
 
 def adjust_lightness(color, amount=0.5):
     """
@@ -62,7 +165,7 @@ def adjust_lightness(color, amount=0.5):
     """
     try:
         c = mc.cnames[color]
-    except:
+    except (KeyError, TypeError):
         c = color
     c = colorsys.rgb_to_hls(*mc.to_rgb(c))
     return colorsys.hls_to_rgb(c[0], np.max([0, np.min([1, amount * c[1]])]), c[2])

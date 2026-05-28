@@ -1,5 +1,4 @@
-from typing import Optional, List, Tuple, Union
-import matplotlib.pyplot as plt
+from typing import Optional, Sequence, Tuple
 import matplotlib.axes
 
 class Axes:
@@ -12,10 +11,10 @@ class Axes:
         ax: matplotlib.axes.Axes, 
         xlim: Optional[Tuple[float, float]] = None, 
         ylim: Optional[Tuple[float, float]] = None, 
-        xticks: Optional[List[float]] = None, 
-        yticks: Optional[List[float]] = None,
-        xtickslabel: Optional[List[str]] = None, 
-        ytickslabel: Optional[List[str]] = None, 
+        xticks: Optional[Sequence[float]] = None, 
+        yticks: Optional[Sequence[float]] = None,
+        xticklabels: Optional[Sequence[str]] = None,
+        yticklabels: Optional[Sequence[str]] = None,
         xlabel: Optional[str] = None, 
         ylabel: Optional[str] = None,
         xscale: str = "linear", 
@@ -24,7 +23,8 @@ class Axes:
         ytwin: bool = True,
         xtwinlabel: bool = False, 
         ytwinlabel: bool = False, 
-        direction: str = 'in'
+        direction: str = 'in',
+        hide_minor_ticks: bool = True,
     ) -> None:
         """
         Initialize the Axes object and configure the main and twin axes.
@@ -41,9 +41,9 @@ class Axes:
             Tick positions on the x-axis. Default is None.
         yticks : list, optional
             Tick positions on the y-axis. Default is None.
-        xtickslabel : list, optional
+        xticklabels : list, optional
             Labels for x-axis ticks. Default is inferred from `xticks`.
-        ytickslabel : list, optional
+        yticklabels : list, optional
             Labels for y-axis ticks. Default is inferred from `yticks`.
         xlabel : str, optional
             Label for x-axis. Default is None.
@@ -55,23 +55,52 @@ class Axes:
             Scale type for the y-axis (e.g., 'linear', 'log'). Default is linear.
         """
 
+        self.ax = ax
+        self.x_twin = None
+        self.y_twin = None
         self.xlim, self.ylim = xlim, ylim
-        self.xticks, self.yticks = xticks, yticks
-        self.xtickslabel = xtickslabel or (list(map(str, xticks)) if xticks else None)
-        self.ytickslabel = ytickslabel or (list(map(str, yticks)) if yticks else None)
+        self.xticks = self._as_list(xticks)
+        self.yticks = self._as_list(yticks)
+        self.xticklabels = self._get_tick_labels(self.xticks, xticklabels, "x")
+        self.yticklabels = self._get_tick_labels(self.yticks, yticklabels, "y")
         self.xscale, self.yscale = xscale, yscale
         self.xtwinlabel, self.ytwinlabel = xtwinlabel, ytwinlabel
         self.direction = direction
+        self.hide_minor_ticks = hide_minor_ticks
         self._configure_axes(ax, "x")
         self._configure_axes(ax, "y")
         if xtwin:    
-            self._configure_axes(ax.twiny(), "x", twin=True)
+            self.x_twin = ax.twiny()
+            self._configure_axes(self.x_twin, "x", twin=True)
         if ytwin:
-            self._configure_axes(ax.twinx(), "y", twin=True)
+            self.y_twin = ax.twinx()
+            self._configure_axes(self.y_twin, "y", twin=True)
         if xlabel:
             ax.set_xlabel(xlabel)
         if ylabel:
             ax.set_ylabel(ylabel)
+
+    @property
+    def twins(self):
+        """Return the created twin axes as ``(x_twin, y_twin)``."""
+        return self.x_twin, self.y_twin
+
+    @staticmethod
+    def _as_list(values):
+        if values is None:
+            return None
+        return list(values)
+
+    @staticmethod
+    def _get_tick_labels(ticks, labels, axis):
+        if labels is None:
+            return list(map(str, ticks)) if ticks is not None else None
+        labels = list(labels)
+        if ticks is not None and len(labels) != len(ticks):
+            raise ValueError(
+                f"{axis} tick labels must have the same length as {axis} ticks"
+            )
+        return labels
         
     
     def _configure_axes(self, ax: matplotlib.axes.Axes, axis: str, twin: bool = False) -> None:
@@ -88,17 +117,17 @@ class Axes:
             Whether the axis is a twin axis.
         """
         if axis == "x":
-            self._set_limits_and_ticks(ax, self.xlim, self.xticks, self.xtickslabel, self.xscale, "x", twin)
+            self._set_limits_and_ticks(ax, self.xlim, self.xticks, self.xticklabels, self.xscale, "x", twin)
         elif axis == "y":
-            self._set_limits_and_ticks(ax, self.ylim, self.yticks, self.ytickslabel, self.yscale, "y", twin)
+            self._set_limits_and_ticks(ax, self.ylim, self.yticks, self.yticklabels, self.yscale, "y", twin)
         ax.tick_params(direction=self.direction)
 
     def _set_limits_and_ticks(
         self, 
         ax: matplotlib.axes.Axes, 
         lim: Optional[Tuple[float, float]], 
-        ticks: Optional[List[float]], 
-        labels: Optional[List[str]], 
+        ticks: Optional[Sequence[float]], 
+        labels: Optional[Sequence[str]], 
         scale: str, 
         axis: str, 
         twin: bool
@@ -124,8 +153,10 @@ class Axes:
             The axis to configure ('x' or 'y').
         """
         # Set scale, limits, and ticks
-        getattr(ax, f"set_{axis}scale")(scale) if scale else None
-        getattr(ax, f"set_{axis}lim")(lim) if lim else None
+        if scale:
+            getattr(ax, f"set_{axis}scale")(scale)
+        if lim is not None:
+            getattr(ax, f"set_{axis}lim")(lim)
         if ticks is not None:
             tick_labels = [] if twin else labels
             getattr(ax, f"set_{axis}ticks")(ticks, labels=tick_labels)
@@ -133,4 +164,16 @@ class Axes:
             pos = "right" if axis == 'y' else 'top'
             twinlabel = self.xtwinlabel if axis == 'x' else self.ytwinlabel
             ax.tick_params(**{f"label{pos}": twinlabel})
-        getattr(ax, f"set_{axis}ticks")([], minor=True)
+        if self.hide_minor_ticks:
+            getattr(ax, f"set_{axis}ticks")([], minor=True)
+
+
+def configure_axes(ax: matplotlib.axes.Axes, **kwargs) -> matplotlib.axes.Axes:
+    """
+    Configure an existing Matplotlib axes and return it for chaining.
+
+    The :class:`Axes` helper object is stored on ``ax.sciplots`` so twin axes
+    remain accessible as ``ax.sciplots.x_twin`` and ``ax.sciplots.y_twin``.
+    """
+    ax.sciplots = Axes(ax, **kwargs)
+    return ax
