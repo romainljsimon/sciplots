@@ -1,3 +1,5 @@
+from typing import Any, Dict, Iterator, List, Optional, Sequence, Tuple, Union
+
 import numpy as np
 import colorsys
 from contextlib import contextmanager
@@ -7,17 +9,25 @@ import matplotlib.colors as mcol
 import matplotlib.cm as cm
 from matplotlib import use
 
-def figure_size(width=400, aspect_ratio=0.5, unit="pt"):
+
+Color = Union[str, Tuple[float, float, float]]
+Number = Union[int, float]
+RcParams = Dict[str, Any]
+
+
+def figure_size(
+    width: Number = 400, aspect_ratio: Number = 0.5, unit: str = "pt"
+) -> List[float]:
     """
     Convert a figure width and aspect ratio to Matplotlib's inch-based size.
 
     Parameters
     ----------
-    width : float, optional
+    width : int or float, optional
         Figure width. Interpreted as points by default.
-    aspect_ratio : float, optional
+    aspect_ratio : int or float, optional
         Figure height divided by figure width.
-    unit : {"pt", "in", "cm"}, optional
+    unit : str, optional
         Unit used for ``width``.
 
     Returns
@@ -44,21 +54,47 @@ def figure_size(width=400, aspect_ratio=0.5, unit="pt"):
 
 
 def get_params(
-    fig_width_pt=400,
-    aspect_ratio=0.5,
-    labelsize=12,
-    legend_fontsize=7,
-    xtick_labelsize=8,
-    ytick_labelsize=8,
-    font_family="serif",
-    usetex=False,
-    dpi=None,
-):
+    fig_width_pt: Number = 400,
+    aspect_ratio: Number = 0.5,
+    labelsize: Number = 12,
+    legend_fontsize: Number = 7,
+    xtick_labelsize: Number = 8,
+    ytick_labelsize: Number = 8,
+    font_family: Union[str, Sequence[str]] = "serif",
+    usetex: bool = False,
+    dpi: Optional[Number] = None,
+) -> RcParams:
     """
     Build the rcParams dictionary used by :func:`update_params`.
 
     This is useful when you want to inspect, merge, or pass the parameters to
     ``plt.rc_context`` yourself.
+
+    Parameters
+    ----------
+    fig_width_pt : int or float, optional
+        Figure width in points.
+    aspect_ratio : int or float, optional
+        Figure height divided by figure width.
+    labelsize : int or float, optional
+        Font size for axis labels.
+    legend_fontsize : int or float, optional
+        Font size for legend text.
+    xtick_labelsize : int or float, optional
+        Font size for x-axis tick labels.
+    ytick_labelsize : int or float, optional
+        Font size for y-axis tick labels.
+    font_family : str or sequence of str, optional
+        Font family or ordered list of font families.
+    usetex : bool, optional
+        Whether to render text with TeX.
+    dpi : int or float, optional
+        DPI used for figures and saved output. Default is None.
+
+    Returns
+    -------
+    dict
+        Matplotlib rcParams values.
     """
     params = {
         "axes.labelsize": labelsize,
@@ -76,36 +112,42 @@ def get_params(
 
 
 def update_params(
-    fig_width_pt=400,
-    aspect_ratio=0.5,
-    labelsize=12,
-    legend_fontsize=7,
-    xtick_labelsize=8,
-    ytick_labelsize=8,
-    backend=None,
-    font_family="serif",
-    usetex=False,
-    dpi=None,
-):
+    fig_width_pt: Number = 400,
+    aspect_ratio: Number = 0.5,
+    labelsize: Number = 12,
+    legend_fontsize: Number = 7,
+    xtick_labelsize: Number = 8,
+    ytick_labelsize: Number = 8,
+    backend: Optional[str] = None,
+    font_family: Union[str, Sequence[str]] = "serif",
+    usetex: bool = False,
+    dpi: Optional[Number] = None,
+) -> RcParams:
     """
     Update matplotlib's rcParams for consistent figure formatting.
 
     Parameters
     ----------
-    fig_width_pt : float, optional
+    fig_width_pt : int or float, optional
         Figure width in points (default is 400).
-    aspect_ratio : float, optional
+    aspect_ratio : int or float, optional
         Ratio to determine figure height from width (default is 0.5).
-    labelsize : int, optional
+    labelsize : int or float, optional
         Font size for axis labels (default is 12).
-    legend_fontsize : int, optional
+    legend_fontsize : int or float, optional
         Font size for legend text (default is 7).
-    xtick_labelsize : int, optional
+    xtick_labelsize : int or float, optional
         Font size for x-axis tick labels (default is 8).
-    ytick_labelsize : int, optional
+    ytick_labelsize : int or float, optional
         Font size for y-axis tick labels (default is 8).
-    backend: str, optional
+    backend : str, optional
         Matplotlib backend to use (default is None, which uses the current backend).
+    font_family : str or sequence of str, optional
+        Font family or ordered list of font families.
+    usetex : bool, optional
+        Whether to render text with TeX.
+    dpi : int or float, optional
+        DPI used for figures and saved output. Default is None.
 
     Returns
     -------
@@ -133,7 +175,9 @@ set_style = update_params
 
 
 @contextmanager
-def style_context(*args, backend=None, **kwargs):
+def style_context(
+    *args: Any, backend: Optional[str] = None, **kwargs: Any
+) -> Iterator[None]:
     """
     Temporarily apply sciplots style settings inside a ``with`` block.
 
@@ -147,15 +191,16 @@ def style_context(*args, backend=None, **kwargs):
     with plt.rc_context(get_params(*args, **kwargs)):
         yield
 
-def adjust_lightness(color, amount=0.5):
+
+def adjust_lightness(color: Color, amount: Number = 0.5) -> Tuple[float, float, float]:
     """
     Adjust the lightness of a given color.
 
     Parameters
     ----------
-    color : str or tuple
-        Color name or RGB tuple.
-    amount : float, optional
+    color : str or tuple of float
+        Matplotlib color name or RGB tuple.
+    amount : int or float, optional
         Factor to adjust lightness (default is 0.5, <1 is darker, >1 is lighter).
 
     Returns
@@ -170,7 +215,10 @@ def adjust_lightness(color, amount=0.5):
     c = colorsys.rgb_to_hls(*mc.to_rgb(c))
     return colorsys.hls_to_rgb(c[0], np.max([0, np.min([1, amount * c[1]])]), c[2])
 
-def get_divergent_cmap(data, col1='b', col2='r'):
+
+def get_divergent_cmap(
+    data: Union[Sequence[Number], np.ndarray], col1: str = "b", col2: str = "r"
+) -> np.ndarray:
     """
     Create a divergent colormap between two colors and map data to it.
 
