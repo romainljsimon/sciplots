@@ -5,6 +5,9 @@ class Axes:
     """
     Helper class to configure matplotlib axes properties, including limits, ticks,
     labels, and scales for both primary and twin axes.
+
+    Most users should call :func:`configure_axes` instead of instantiating this
+    class directly.
     """
     def __init__(
         self, 
