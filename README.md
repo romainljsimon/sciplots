@@ -59,3 +59,13 @@ spl.configure_axes(
     xticklabels=["low", "mid", "high"],
 )
 ```
+
+## Panel labels
+
+Add consistent labels to a subplot grid. Labels default to A, B, C, and
+so on, and can be customized with `x`, `y`, and `Axes.text` keyword arguments:
+
+```python
+fig, axes = plt.subplots(1, 2)
+spl.label_panels(axes, labels=["A", "B"], fontsize=14, x=0.03, y=0.97)
+```

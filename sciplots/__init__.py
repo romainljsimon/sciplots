@@ -8,6 +8,7 @@ from .params import (
     style_context,
     update_params,
 )
+from .panels import label_panels
 
 __all__ = [
     "Axes",
@@ -16,6 +17,7 @@ __all__ = [
     "figure_size",
     "get_divergent_cmap",
     "get_params",
+    "label_panels",
     "set_style",
     "style_context",
     "update_params",
