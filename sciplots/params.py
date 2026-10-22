@@ -1,8 +1,7 @@
-from typing import Any, Dict, Iterator, List, Optional, Sequence, Tuple, Union
+from typing import Any, Dict, Optional, Sequence, Tuple, Union
 
 import numpy as np
 import colorsys
-from contextlib import contextmanager
 import matplotlib.pyplot as plt
 import matplotlib.colors as mc
 import matplotlib.colors as mcol
@@ -15,47 +14,8 @@ Number = Union[int, float]
 RcParams = Dict[str, Any]
 
 
-def figure_size(
-    width: Number = 400, aspect_ratio: Number = 0.5, unit: str = "pt"
-) -> List[float]:
-    """
-    Convert a figure width and aspect ratio to Matplotlib's inch-based size.
-
-    Parameters
-    ----------
-    width : int or float, optional
-        Figure width. Interpreted as points by default.
-    aspect_ratio : int or float, optional
-        Figure height divided by figure width.
-    unit : str, optional
-        Unit used for ``width``.
-
-    Returns
-    -------
-    list
-        ``[width, height]`` in inches, suitable for ``figure.figsize``.
-    """
-    if width <= 0:
-        raise ValueError("width must be positive")
-    if aspect_ratio <= 0:
-        raise ValueError("aspect_ratio must be positive")
-
-    unit = unit.lower()
-    if unit in {"pt", "point", "points"}:
-        fig_width = width / 72.27
-    elif unit in {"in", "inch", "inches"}:
-        fig_width = width
-    elif unit in {"cm", "centimeter", "centimeters"}:
-        fig_width = width / 2.54
-    else:
-        raise ValueError("unit must be one of 'pt', 'in', or 'cm'")
-
-    return [fig_width, fig_width * aspect_ratio]
-
-
 def get_params(
-    fig_width_pt: Number = 400,
-    aspect_ratio: Number = 0.5,
+    figsize: Tuple[Number, Number] = (400 / 72.27, 200 / 72.27),
     labelsize: Number = 12,
     legend_fontsize: Number = 7,
     xtick_labelsize: Number = 8,
@@ -72,10 +32,8 @@ def get_params(
 
     Parameters
     ----------
-    fig_width_pt : int or float, optional
-        Figure width in points.
-    aspect_ratio : int or float, optional
-        Figure height divided by figure width.
+    figsize : tuple of int or float, optional
+        Figure size as ``(width, height)`` in inches, following Matplotlib.
     labelsize : int or float, optional
         Font size for axis labels.
     legend_fontsize : int or float, optional
@@ -103,7 +61,7 @@ def get_params(
         "ytick.labelsize": ytick_labelsize,
         "text.usetex": usetex,
         "font.family": font_family,
-        "figure.figsize": figure_size(fig_width_pt, aspect_ratio, unit="pt"),
+        "figure.figsize": figsize,
     }
     if dpi is not None:
         params["figure.dpi"] = dpi
@@ -112,8 +70,7 @@ def get_params(
 
 
 def update_params(
-    fig_width_pt: Number = 400,
-    aspect_ratio: Number = 0.5,
+    figsize: Tuple[Number, Number] = (400 / 72.27, 200 / 72.27),
     labelsize: Number = 12,
     legend_fontsize: Number = 7,
     xtick_labelsize: Number = 8,
@@ -128,10 +85,8 @@ def update_params(
 
     Parameters
     ----------
-    fig_width_pt : int or float, optional
-        Figure width in points (default is 400).
-    aspect_ratio : int or float, optional
-        Ratio to determine figure height from width (default is 0.5).
+    figsize : tuple of int or float, optional
+        Figure size as ``(width, height)`` in inches, following Matplotlib.
     labelsize : int or float, optional
         Font size for axis labels (default is 12).
     legend_fontsize : int or float, optional
@@ -157,8 +112,7 @@ def update_params(
     if backend is not None:
         use(backend)
     params = get_params(
-        fig_width_pt=fig_width_pt,
-        aspect_ratio=aspect_ratio,
+        figsize=figsize,
         labelsize=labelsize,
         legend_fontsize=legend_fontsize,
         xtick_labelsize=xtick_labelsize,
@@ -174,22 +128,20 @@ def update_params(
 set_style = update_params
 
 
-@contextmanager
 def style_context(
     *args: Any, backend: Optional[str] = None, **kwargs: Any
-) -> Iterator[None]:
+):
     """
     Temporarily apply sciplots style settings inside a ``with`` block.
 
     Examples
     --------
-    >>> with style_context(fig_width_pt=300, aspect_ratio=1):
+    >>> with style_context(figsize=(4.15, 4.15)):
     ...     fig, ax = plt.subplots()
     """
     if backend is not None:
         use(backend)
-    with plt.rc_context(get_params(*args, **kwargs)):
-        yield
+    return plt.rc_context(get_params(*args, **kwargs))
 
 
 def adjust_lightness(color: Color, amount: Number = 0.5) -> Tuple[float, float, float]:
