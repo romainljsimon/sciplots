@@ -64,10 +64,10 @@ def test_style_context_applies_settings_temporarily():
     original_family = plt.rcParams["font.family"]
     original_figsize = plt.rcParams["figure.figsize"]
 
-    with spl.style_context(fig_width_pt=240, aspect_ratio=0.75, font_family="sans-serif"):
+    with spl.style_context(figsize=(3.32, 2.49), font_family="sans-serif"):
         assert plt.rcParams["font.family"] == ["sans-serif"]
         assert plt.rcParams["figure.figsize"] == pytest.approx(
-            spl.figure_size(240, 0.75)
+            [3.32, 2.49]
         )
 
     assert plt.rcParams["font.family"] == original_family
@@ -75,8 +75,8 @@ def test_style_context_applies_settings_temporarily():
 
 
 def test_get_params_returns_figure_and_dpi_settings():
-    params = spl.get_params(fig_width_pt=300, aspect_ratio=0.5, dpi=150)
+    params = spl.get_params(figsize=(4.15, 2.075), dpi=150)
 
-    assert params["figure.figsize"] == pytest.approx(spl.figure_size(300, 0.5))
+    assert params["figure.figsize"] == pytest.approx((4.15, 2.075))
     assert params["figure.dpi"] == 150
     assert params["savefig.dpi"] == 150

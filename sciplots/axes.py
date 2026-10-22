@@ -37,9 +37,11 @@ class Axes:
         ax : matplotlib.axes.Axes
             The main Axes object to configure.
         xlim : tuple, optional
-            Limits for the x-axis (min, max). Default is None.
+            Limits for the x-axis (min, max). If omitted, use the first and
+            last x values of the first plotted line when available.
         ylim : tuple, optional
-            Limits for the y-axis (min, max). Default is None.
+            Limits for the y-axis (min, max). If omitted, use the first and
+            last y values of the first plotted line when available.
         xticks : list, optional
             Tick positions on the x-axis. Default is None.
         yticks : list, optional
@@ -61,7 +63,8 @@ class Axes:
         self.ax = ax
         self.x_twin = None
         self.y_twin = None
-        self.xlim, self.ylim = xlim, ylim
+        self.xlim = xlim if xlim is not None else self._line_data_limits(ax, "x")
+        self.ylim = ylim if ylim is not None else self._line_data_limits(ax, "y")
         self.xticks = self._as_list(xticks)
         self.yticks = self._as_list(yticks)
         self.xticklabels = self._get_tick_labels(self.xticks, xticklabels, "x")
@@ -104,6 +107,16 @@ class Axes:
                 f"{axis} tick labels must have the same length as {axis} ticks"
             )
         return labels
+
+    @staticmethod
+    def _line_data_limits(ax: matplotlib.axes.Axes, axis: str):
+        """Return the first and last data values from the first plotted line."""
+        if not ax.lines:
+            return None
+        data = getattr(ax.lines[0], f"get_{axis}data")()
+        if len(data) == 0:
+            return None
+        return data[0], data[-1]
         
     
     def _configure_axes(self, ax: matplotlib.axes.Axes, axis: str, twin: bool = False) -> None:

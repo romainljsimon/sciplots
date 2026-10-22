@@ -1,15 +1,30 @@
 # sciplots
 
-Simple plotting utilities for `matplotlib` with clean defaults, optional twin
-axes, and helpers for publication-sized figures.
+`sciplots` adds small helpers for consistent Matplotlib figures. Set figure
+dimensions and typography, configure axis scales and ticks in one call, and add
+labels to subplot grids. The result is still a regular Matplotlib figure, so it
+works with your existing plotting and export workflow.
+
+## Matplotlib and sciplots
+
+These plots show the same data. The sciplots example applies a consistent style
+and configures the axes through `configure_axes`.
+
+<div style="display:flex; gap:0; align-items:flex-start;">
+  <div style="width:50%; text-align:center;"><strong>Matplotlib</strong><img src="examples/comparison_plot_default.png" alt="Plot made with Matplotlib" width="100%"></div><div style="width:50%; text-align:center;"><strong>sciplots</strong><img src="examples/comparison_plot_sciplots.png" alt="Plot made with sciplots" width="100%"></div>
+</div>
 
 ## Quick start
 
 ```python
+import numpy as np
 import matplotlib.pyplot as plt
 import sciplots as spl
 
-spl.set_style(fig_width_pt=300, aspect_ratio=1.0)
+spl.set_style(figsize=(4.15, 4.15))
+
+x = np.logspace(-1, 2, 100)
+y = x**2
 
 fig, ax = plt.subplots()
 ax.plot(x, y, label="data")
@@ -35,9 +50,9 @@ Use `style_context` when you only want the style to apply to one plot or one
 section of a notebook:
 
 ```python
-with spl.style_context(fig_width_pt=240, aspect_ratio=0.75, font_family="serif"):
+with spl.style_context(figsize=(3.32, 2.49), font_family="serif"):
     fig, ax = plt.subplots()
-    ax.plot(x, y)
+    ax.plot([0, 1], [0, 1])
 ```
 
 ## Axes helper
