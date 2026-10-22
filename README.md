@@ -10,16 +10,19 @@ works with your existing plotting and export workflow.
 These plots show the same data. The sciplots example applies a consistent style
 and configures the axes through `configure_axes`.
 
-<div style="display: flex; gap: 20px; align-items: flex-start; justify-content: center; margin: 0 auto;">
-  <div style="text-align: center;">
-    <strong>Matplotlib</strong><br>
-    <img src="examples/comparison_plot_default.png" alt="Plot made with Matplotlib" width="250">
-  </div>
-  <div style="text-align: center;">
-    <strong>sciplots</strong><br>
-    <img src="examples/comparison_plot_sciplots.png" alt="Plot made with sciplots" width="250">
-  </div>
-</div>
+<table align="center" style="border: none;">
+  <tr>
+    <td align="center" style="border: none;">
+      <b>Matplotlib</b><br>
+      <img src="examples/comparison_plot_default.png" alt="Plot made with Matplotlib" width="350">
+    </td>
+    <td align="center" style="border: none;">
+      <b>sciplots</b><br>
+      <img src="examples/comparison_plot_sciplots.png" alt="Plot made with sciplots" width="350">
+    </td>
+  </tr>
+</table>
+
 ## Quick start
 
 ```python
