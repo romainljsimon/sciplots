@@ -10,7 +10,7 @@ works with your existing plotting and export workflow.
 These plots show the same data. The sciplots example applies a consistent style
 and configures the axes through `configure_axes`.
 
-<div style="display:flex; gap:0; align-items:flex-start;">
+<div style="display:flex; gap:0; align-items:flex-start; max-width:720px; margin:0 auto;">
   <div style="width:50%; text-align:center;"><strong>Matplotlib</strong><img src="examples/comparison_plot_default.png" alt="Plot made with Matplotlib" width="100%"></div><div style="width:50%; text-align:center;"><strong>sciplots</strong><img src="examples/comparison_plot_sciplots.png" alt="Plot made with sciplots" width="100%"></div>
 </div>
 
