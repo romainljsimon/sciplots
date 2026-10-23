@@ -8,6 +8,7 @@ from .params import (
     update_params,
 )
 from .panels import label_panels
+from .spines import despine
 
 __all__ = [
     "Axes",
@@ -19,4 +20,5 @@ __all__ = [
     "set_style",
     "style_context",
     "update_params",
+    "despine"
 ]
