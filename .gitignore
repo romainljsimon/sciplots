@@ -1,7 +1,9 @@
 sciplots.egg-info/
-sciplots/__pycache__/
+*/__pycache__/
+.DS_Store
 build/
 .venv/
 venv
 env/
+site/
 uv.lock
