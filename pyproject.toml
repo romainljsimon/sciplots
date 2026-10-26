@@ -17,6 +17,9 @@ license-files = [
     "LICENSE",
 ]
 
+[project.optional-dependencies]
+test = ["pytest>=9.0"]
+
 [project.urls]
 repository = "https://github.com/romainljsimon/sciplots/"
 
@@ -27,6 +30,5 @@ build-backend = "setuptools.build_meta"
 [dependency-groups]
 dev = [
     "zensical>=0.0.67",
-    "pytest>=9.0",
     "mkdocstrings[python]>=1.0.8",
 ]
