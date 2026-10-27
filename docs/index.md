@@ -2,12 +2,13 @@
 icon: lucide/rocket
 ---
 
-# sciplots
+# Get Started
 
-Small helpers for making consistent, publication-ready Matplotlib figures. Set
-figure typography and dimensions, configure axes and twin axes in one call, and
-label subplot grids consistently. `sciplots` works with ordinary Matplotlib
-figures and axes, so you can keep using your existing plotting and export code.
+sciplots is a collection of small helpers for making consistent, publication-ready 
+Matplotlib figures. Set figure typography and dimensions, configure axes and 
+twin axes in one call, and label subplot grids consistently. `sciplots` works with 
+ordinary Matplotlib figures and axes, so you can keep using your existing plotting 
+and export code.
 
 ## Install
 
