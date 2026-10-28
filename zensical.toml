@@ -1,5 +1,5 @@
 [project]
-# site_url = "https://www.example.com/"
+site_url = "https://romainljsimon.github.io/sciplots/"
 site_name = "sciplots"
 #site_description = "Your project description"
 site_author = "Romain Simon"
