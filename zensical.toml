@@ -12,7 +12,6 @@ repo_name = "romainljsimon/sciplots"
 
 nav = [
   { "Get started" = "index.md" },
-  { "API Reference" = "api.md" },
 ]
 
 # extra_css = ["stylesheets/extra.css"]
