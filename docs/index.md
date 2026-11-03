@@ -4,11 +4,10 @@ icon: lucide/rocket
 
 # Get Started
 
-sciplots is a collection of small helpers for making consistent, publication-ready 
-Matplotlib figures. Set figure typography and dimensions, configure axes and 
-twin axes in one call, and label subplot grids consistently. `sciplots` works with 
-ordinary Matplotlib figures and axes, so you can keep using your existing plotting 
-and export code.
+`sciplots` adds small helpers for consistent Matplotlib figures for scientific plots.
+Set automatic twin axis, figure dimensions and typography, configure axis scales and ticks 
+in one call, and addlabels to subplot grids. The result is still a regular Matplotlib figure, so it
+works with your existing plotting and export workflow.
 
 ## Install
 

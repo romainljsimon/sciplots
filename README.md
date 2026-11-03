@@ -1,9 +1,12 @@
-# sciplots
+<h1 align="center">SciPlots</h1>
 
-`sciplots` adds small helpers for consistent Matplotlib figures. Set figure
-dimensions and typography, configure axis scales and ticks in one call, and add
-labels to subplot grids. The result is still a regular Matplotlib figure, so it
+`sciplots` adds small helpers for consistent Matplotlib figures for scientific plots.
+Set automatic twin axis, figure dimensions and typography, configure axis scales and ticks 
+in one call, and addlabels to subplot grids. The result is still a regular Matplotlib figure, so it
 works with your existing plotting and export workflow.
+<p align="center">
+  <a href="https://romainljsimon.github.io/sciplots/">Documentation</a>
+</p>
 
 ## Matplotlib and sciplots
 
